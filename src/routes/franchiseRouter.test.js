@@ -1,12 +1,22 @@
 const request = require('supertest');
 const app = require('../service');
 
-const adminUser = { name: '常用名字', email: 'a@jwt.com', password: 'admin' };
-let adminAuthToken;
-let adminUserId
+// const adminUser = { name: '常用名字', email: 'a@jwt.com', password: 'admin' };
+let adminAuthToken, franchiseId, adminUser;
+
+const { Role, DB } = require('../database/database.js');
+
+async function createAdminUser() {
+  let user = { password: 'toomanysecrets', roles: [{ role: Role.Admin }] };
+  user.name = Math.random().toString(36).substring(2, 12);
+  user.email = user.name + '@admin.com';
+
+  user = await DB.addUser(user);
+  return { ...user, password: 'toomanysecrets' };
+}
 
 beforeAll(async () => {
-    const adminUser = { name: '常用名字', email: 'a@jwt.com', password: 'admin' };
+    adminUser = await createAdminUser();
     const loginRes = await request(app).put('/api/auth').send(adminUser);
     adminAuthToken = loginRes.body.token;
     adminUserId = loginRes.body.user.id;

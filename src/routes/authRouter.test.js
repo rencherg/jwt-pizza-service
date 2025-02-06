@@ -57,10 +57,6 @@ test('update user', async () => {
     const authToken = registerRes.body.token;
     const newUserId = registerRes.body.user.id;
 
-    // const adminUser = { name: '常用名字', email: 'a@jwt.com', password: 'admin' };
-    // const loginRes = await request(app).put('/api/auth').send(adminUser);
-    // adminAuthToken = loginRes.body.token;
-
     newTestUser.name = 'new diner';
     const updateRes = await request(app).put('/api/auth/' + newUserId).set('Authorization', `Bearer ${authToken}`).send(newTestUser);
     expect(updateRes.status).toBe(200);
