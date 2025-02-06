@@ -2,12 +2,12 @@ const request = require('supertest');
 const app = require('../service');
 
 const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
-let userId
+// let userId
 
 beforeAll(async () => {
     testUser.email = Math.random().toString(36).substring(2, 12) + '@test.com';
-    const requestRes = await request(app).post('/api/auth').send(testUser);
-    userId = requestRes.body.user.id;
+    await request(app).post('/api/auth').send(testUser);
+    // userId = requestRes.body.user.id;
 });
 
 test('login', async () => {
