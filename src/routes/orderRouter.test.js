@@ -71,35 +71,3 @@ test('create a menu item', async () => {
     });
     expect(foundPepe).toBe(true);
   });
-
-// test('create an order item negative', async () => {
-
-//     const newMenuItem = {
-//         title: Math.random().toString(36).substring(2, 12) + 'goodpizza',
-//         description: 'Pepe enters the kitchen...', 
-//         image: 'pizza2.png',
-//         price: '17.76'
-//     };
-  
-//     const createRes = await request(app).put('/api/order/menu').set('Authorization', `Bearer ${adminAuthToken}`).send(newMenuItem);
-//     expect(createRes.status).toBe(200);
-
-//     const getRes = await request(app).get('/api/order/menu').set('Authorization', `Bearer ${adminAuthToken}`)
-//     expect(getRes.status).toBe(200);
-
-//     fetch.mockResolvedValue(new Response(JSON.stringify({ reportUrl: 'http://factory.com/report', jwt: 'factory-jwt' }), { status: 200 }));
-
-//     const orderReq = { items: 
-//         [{ 
-//             name: Math.random().toString(36).substring(2, 12) + 'goodpizza',
-//             quantity: 1
-//         }] 
-//     };
-
-//     const createOrderRes = await request(app)
-//       .post('/api/order')
-//       .set('Authorization', `Bearer ${adminAuthToken}`)
-//       .send(orderReq);
-
-//     expect(createOrderRes.status).toBe(500);
-//   });
