@@ -3,6 +3,7 @@ const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
+const { addPizza, addPizzaFailure, addRevenue } = require('../../metrics.js');
 
 const orderRouter = express.Router();
 
@@ -56,7 +57,6 @@ orderRouter.put(
     if (!req.user.isRole(Role.Admin)) {
       throw new StatusCodeError('unable to add menu item', 403);
     }
-
     const addMenuItemReq = req.body;
     await DB.addMenuItem(addMenuItemReq);
     res.send(await DB.getMenu());
@@ -86,8 +86,11 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
+      addPizza();
+      addRevenue(orderReq.items.reduce((acc, i) => acc + i.price, 0));
       res.send({ order, reportSlowPizzaToFactoryUrl: j.reportUrl, jwt: j.jwt });
     } else {
+      addPizzaFailure();
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportPizzaCreationErrorToPizzaFactoryUrl: j.reportUrl });
     }
   })
