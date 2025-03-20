@@ -3,7 +3,7 @@ const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
-const { addPizza, addPizzaFailure, addRevenue } = require('../metrics.js');
+const { addPizza, addPizzaFailure, addRevenue, updatePizzaCreationLatency } = require('../metrics.js');
 
 const orderRouter = express.Router();
 
@@ -78,7 +78,21 @@ orderRouter.post(
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
     const orderReq = req.body;
+
+    const start = process.hrtime();
+
+    try {
+      order = await DB.addDinerOrder(req.user, orderReq);
+    } catch (error) {
+      addPizzaFailure();
+    }
+
     const order = await DB.addDinerOrder(req.user, orderReq);
+    const [seconds, nanoseconds] = process.hrtime(start);
+    const dbLatencyMs = (seconds * 1000) + (nanoseconds / 1e6); // Convert to milliseconds
+
+    updatePizzaCreationLatency(dbLatencyMs);
+
     const r = await fetch(`${config.factory.url}/api/order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
@@ -90,7 +104,6 @@ orderRouter.post(
       addRevenue(orderReq.items.reduce((acc, i) => acc + i.price, 0));
       res.send({ order, reportSlowPizzaToFactoryUrl: j.reportUrl, jwt: j.jwt });
     } else {
-      addPizzaFailure();
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportPizzaCreationErrorToPizzaFactoryUrl: j.reportUrl });
     }
   })

@@ -13,6 +13,20 @@ const apiRouter = express.Router();
 
 app.use(metrics.trackHttpRequests());
 
+// Middleware to measure latency
+app.use((req, res, next) => {
+  const start = process.hrtime();
+
+  res.on('finish', () => {
+    const [seconds, nanoseconds] = process.hrtime(start);
+    const latencyMs = (seconds * 1000) + (nanoseconds / 1e6);
+
+    metrics.updateServiceLatency(latencyMs);
+  });
+
+  next();
+});
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');

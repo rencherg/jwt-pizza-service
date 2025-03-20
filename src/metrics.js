@@ -7,6 +7,8 @@ const authentication = {};
 let totalPizzas = 0;
 let totalRevenue = 0;
 let totalPizzaFailures = 0;
+let serviceLatency = 0;
+let pizzaCreationLatency = 0;
 
 function getCpuUsagePercentage() {
         const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -50,6 +52,14 @@ function trackHttpRequests() {
         };
 }
 
+function updateServiceLatency(latency) {
+        serviceLatency = latency;
+} 
+
+function updatePizzaCreationLatency(latency) {
+        pizzaCreationLatency = latency;
+}
+
 //status is either success or failure
 function trackAuthenticationAttempts(status) {
         authentication[status] = (authentication[status] || 0) + 1; 
@@ -66,6 +76,8 @@ setInterval(() => {
         sendMetricToGrafana('totalPizzas', totalPizzas);
         sendMetricToGrafana('totalRevenue', totalRevenue.toFixed(2) * 100);
         sendMetricToGrafana('totalPizzaFailures', totalPizzaFailures);
+        sendMetricToGrafana('serviceLatency', serviceLatency.toFixed(2) * 100);
+        sendMetricToGrafana('pizzaCreationLatency', pizzaCreationLatency.toFixed(2) * 100);
 
         Object.keys(authentication).forEach((status) => {
                 sendMetricToGrafana('authentication', authentication[status], { status });
@@ -131,4 +143,4 @@ function sendMetricToGrafana(metricName, metricValue, attributes) {
 
 }
 
-module.exports = { incrementActiveUsers, decrementActiveUsers, trackHttpRequests, trackAuthenticationAttempts, addPizza, addPizzaFailure, addRevenue };
+module.exports = { incrementActiveUsers, decrementActiveUsers, trackHttpRequests, trackAuthenticationAttempts, addPizza, addPizzaFailure, addRevenue, updateServiceLatency, updatePizzaCreationLatency };
