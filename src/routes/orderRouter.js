@@ -81,13 +81,15 @@ orderRouter.post(
 
     const start = process.hrtime();
 
+    let order;
+
     try {
       order = await DB.addDinerOrder(req.user, orderReq);
     } catch (error) {
       addPizzaFailure();
+      console.log(error)
     }
 
-    const order = await DB.addDinerOrder(req.user, orderReq);
     const [seconds, nanoseconds] = process.hrtime(start);
     const dbLatencyMs = (seconds * 1000) + (nanoseconds / 1e6); // Convert to milliseconds
 
