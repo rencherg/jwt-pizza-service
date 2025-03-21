@@ -90,6 +90,7 @@ orderRouter.post(
       console.log(error)
     }
 
+    order = await DB.addDinerOrder(req.user, orderReq);
     const [seconds, nanoseconds] = process.hrtime(start);
     const dbLatencyMs = (seconds * 1000) + (nanoseconds / 1e6); // Convert to milliseconds
 
