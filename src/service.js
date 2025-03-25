@@ -5,6 +5,7 @@ const franchiseRouter = require('./routes/franchiseRouter.js');
 const version = require('./version.json');
 const config = require('./config.js');
 const metrics = require('./metrics.js');
+const logger = require('./logger');
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,7 @@ app.use(setAuthUser);
 const apiRouter = express.Router();
 
 app.use(metrics.trackHttpRequests());
+app.use(logger.httpLogger);
 
 // Middleware to measure latency
 app.use((req, res, next) => {
@@ -65,6 +67,10 @@ app.use('*', (req, res) => {
 app.use((err, req, res, next) => {
   res.status(err.statusCode ?? 500).json({ message: err.message, stack: err.stack });
   next();
+});
+
+process.on('uncaughtException', (error) => {
+  logger.error(`Uncaught Exception: ${error.message}`, { stack: error.stack });
 });
 
 module.exports = app;
