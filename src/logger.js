@@ -24,6 +24,14 @@ class Logger {
         this.log('info', 'sql', query);
   }
 
+  logFactoryCall(requestInfo){
+        this.log('info', 'factory', requestInfo);
+  }
+
+  logError(error){
+        this.log('error', 'error', error);
+  }
+
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];
