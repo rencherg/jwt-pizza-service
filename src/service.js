@@ -63,7 +63,6 @@ app.use('*', (req, res) => {
   });
 });
 
-// Default error handler for all exceptions and errors.
 app.use((err, req, res, next) => {
   logger.logError(`Error: ${err.message}`, { stack: err.stack });
   res.status(err.statusCode ?? 500).json({ message: err.message, stack: err.stack });
@@ -72,11 +71,6 @@ app.use((err, req, res, next) => {
 
 process.on('uncaughtException', (error) => {
   logger.logError(`Uncaught Exception: ${error.message}`, { stack: error.stack });
-});
-
-// Catch uncaught exceptions
-process.on("uncaughtException", (err) => {
-  logger.logError(`Error: ${err.message}`, { stack: err.stack });
 });
 
 module.exports = app;
