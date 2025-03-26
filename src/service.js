@@ -70,7 +70,7 @@ app.use((err, req, res, next) => {
 });
 
 process.on('uncaughtException', (error) => {
-  logger.logError(`Uncaught Exception: ${error.message}`, { stack: error.stack });
+  logger.logError({'Uncaught Exception': `${error.message}`, 'stack': error.stack });
 });
 
 module.exports = app;
