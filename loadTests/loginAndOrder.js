@@ -74,7 +74,6 @@ export function imported_HAR() {
       }
     )
     if (!check(response, { 'status equals 200': response => response.status.toString() === '200' })) {
-      console.log(response.body);
       fail('Login was *not* 200');
     }
 
@@ -154,8 +153,6 @@ export function imported_HAR() {
     } catch (error) {
       console.error("Error parsing response:", error);
     }
-
-    console.log(myBody.jwt)
 
     // verify pizza
     response = http.post(
