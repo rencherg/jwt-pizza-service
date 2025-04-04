@@ -150,4 +150,4 @@ function sendMetricToGrafana(metricName, metricValue, attributes) {
 
 }
 
-module.exports = { incrementActiveUsers, decrementActiveUsers, trackHttpRequests, trackAuthenticationAttempts, addPizza, addPizzaFailure, addRevenue, updateServiceLatency, updatePizzaCreationLatency };
+module.exports = { incrementActiveUsers, decrementActiveUsers, trackHttpRequests, trackAuthenticationAttempts, addPizza, addPizzaFailure, addRevenue, updateServiceLatency, updatePizzaCreationLatency, resetMetrics };
