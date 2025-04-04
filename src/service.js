@@ -50,6 +50,14 @@ apiRouter.use('/docs', (req, res) => {
   });
 });
 
+app.get('/reset', (req, res) => {
+  metrics.resetMetrics();
+  res.json({
+    message: 'metrics were reset',
+    version: version.version,
+  });
+});
+
 app.get('/', (req, res) => {
   res.json({
     message: 'welcome to JWT Pizza',

@@ -24,6 +24,15 @@ function getMemoryUsagePercentage() {
         return memoryUsage.toFixed(2) * 100;
 }
 
+function resetMetrics(){
+        activeUsers = 0;
+        totalPizzas = 0;
+        totalRevenue = 0;
+        totalPizzaFailures = 0;
+        serviceLatency = 0;
+        pizzaCreationLatency = 0;
+}
+
 function incrementActiveUsers() {
         activeUsers++;
 }
